@@ -409,12 +409,12 @@ def initialize_services():
     # 启动主动消息倒计时
     auto_sender.start_countdown()
 
-def message_dispatcher():
+def message_dispatcher(wx_instance):  # 添加参数
     """消息分发器 - 将消息分发到对应的处理队列"""
     global ROBOT_WX_NAME, logger, wait, processed_messages, last_processed_content
 
-    wx = None
-    last_window_check = 0
+    wx = wx_instance  # 使用传入的实例
+    last_window_check = time.time()
     check_interval = 600
 
     logger.info("消息分发器启动")
@@ -423,9 +423,10 @@ def message_dispatcher():
         try:
             current_time = time.time()
 
-            if wx is None or (current_time - last_window_check > check_interval):
-                wx = WeChat()
+            # 定期检查窗口有效性
+            if current_time - last_window_check > check_interval:
                 if not wx.GetSessionList():
+                    logger.warning("会话列表获取失败，等待重试...")
                     time.sleep(5)
                     continue
                 last_window_check = current_time
@@ -450,18 +451,23 @@ def message_dispatcher():
                         msgtype = msg.type
                         content = msg.content
                         
+                        # 调试日志 - 打印原始消息信息
+                        logger.info(f"【调试】原始消息 - 类型:{msgtype}, 内容:{content}, 发送者:{msg.sender}, 窗口:{who}")
+                        
                         if msg_id and msg_id in processed_messages:
                             logger.debug(f"跳过已处理的消息ID: {msg_id}")
                             continue
                         if not content:
+                            logger.info(f"【调试】消息内容为空，跳过")
                             continue
-                        if msgtype != 'friend':
-                            logger.debug(f"非好友消息，忽略! 消息类型: {msgtype}")
+                        # 接受 text 和 base 类型的消息（这些都是好友消息）
+                        if msgtype not in ['friend', 'text', 'base']:
+                            logger.info(f"【调试】非好友消息，忽略! 消息类型: {msgtype}")
                             continue
-                        
                         # 检查消息来源是否在监听列表中
+                        logger.info(f"【调试】检查监听列表: {who} in {listen_list} = {who in listen_list}")
                         if who not in listen_list:
-                            logger.debug(f"消息来源不在监听列表中，忽略: {who}")
+                            logger.info(f"【调试】消息来源不在监听列表中，忽略: {who}")
                             continue
                         
                         if msg_id:
@@ -469,9 +475,10 @@ def message_dispatcher():
                         last_processed_content[who] = content            
                             
                         # 接收窗口名跟发送人一样，代表是私聊，否则是群聊
+                        logger.info(f"【调试】比较: who={who}, msg.sender={msg.sender}, 相等={who == msg.sender}")
                         if who == msg.sender:
                             # 私聊消息 - 放入私聊队列
-                            logger.debug(f"[分发] 私聊消息 -> 私聊队列: {who}")
+                            logger.info(f"[分发] 私聊消息 -> 私聊队列: {who}")
                             private_message_queue.put((msg, msg.sender))
                         else:
                             # 群聊消息 - 检查触发条件后放入群聊队列
@@ -517,7 +524,7 @@ def message_dispatcher():
                                                 break
                             
                             if should_respond:
-                                logger.debug(f"[分发] 群聊消息触发响应 - 原因: {trigger_reason} -> 群聊队列: {who}")
+                                logger.info(f"[分发] 群聊消息触发响应 - 原因: {trigger_reason} -> 群聊队列: {who}")
                                 group_message_queue.put((msg, who, group_config))
                             else:
                                 logger.debug(f"群聊消息未触发响应 - 群聊:{who}, 内容: {content}")
@@ -535,11 +542,10 @@ def initialize_wx_listener():
     """
     初始化微信监听，包含重试机制
     """
-    # 使用全局变量
     global listen_list, logger
 
     max_retries = 3
-    retry_delay = 2  # 秒
+    retry_delay = 2
 
     for attempt in range(max_retries):
         try:
@@ -549,7 +555,7 @@ def initialize_wx_listener():
                 time.sleep(retry_delay)
                 continue
 
-            # 循环添加监听对象，设置保存图片和语音消息
+            # 循环添加监听对象
             for chat_name in listen_list:
                 try:
                     # 先检查会话是否存在
@@ -557,10 +563,15 @@ def initialize_wx_listener():
                         logger.error(f"找不到会话: {chat_name}")
                         continue
 
-                    # 尝试添加监听，设置savepic=True, savevoice=True
-                    wx.AddListenChat(who=chat_name, savepic=True, savevoice=True)
-                    logger.info(f"成功添加监听: {chat_name}")
-                    time.sleep(0.5)  # 添加短暂延迟，避免操作过快
+                    # 直接调用 AddListenChat，不传回调
+                    # wxauto.py 内部已处理消息队列
+                    result = wx.AddListenChat(chat_name)
+                    if result:
+                        logger.info(f"成功添加监听: {chat_name}")
+                    else:
+                        logger.error(f"添加监听失败 {chat_name}")
+                    time.sleep(0.5)
+                    
                 except Exception as e:
                     logger.error(f"添加监听失败 {chat_name}: {str(e)}")
                     continue
@@ -711,7 +722,8 @@ def main():
         print_status("启动并行消息处理系统...", "info", "ANTENNA")
         
         # 启动消息分发线程
-        dispatcher_thread = threading.Thread(target=message_dispatcher, name="MessageDispatcher")
+        # 使用已有的 wx 实例（在 initialize_wx_listener 中返回的那个）
+        dispatcher_thread = threading.Thread(target=message_dispatcher, args=(wx,), name="MessageDispatcher")
         dispatcher_thread.daemon = True
         
         # 启动私聊处理线程

@@ -1,8 +1,8 @@
 {
-    "version": "1.4.3.0",
-    "last_update": "2025-08-09",
-    "description": "新增热更新模块；新增语音通话提示功能；新增世界书功能；意图识别模块支持单独设置更加低成本的小模型；为保证用户体验，在模型效果产生波动时会依照默认顺序使用其他模型生成回答；修复历史遗留问题一处，降低了报错500的概率",
-    "download_url": "https://git.kourichat.com/KouriChat-Main/cloud-delivery-repo/releases/download/v{version}/kourichat-v{version}.zip",
+    "version": "1.4.3.2",
+    "last_update": "2025-09-22",
+    "description": "现在主动消息会被计入上下文窗口；\n修复了一些已知问题。注意！更新请备份世界书 目录\\src\\base\\worldview.md  或更新完毕去.backup查找！",
+    "download_url": "https://git.kourichat.com/KouriChat-Main/KouriChat/archive/1.4.3.2.zip",
     "file_size": "约 15.2 MB",
     "checksum": "sha256:abcd1234...",
     "changelog": [
@@ -13,5 +13,14 @@
     ],
     "is_critical": false,
     "min_version": "1.0.0",
-    "update_type": "optional"
+    "update_type": "optional",
+    "announcement": {
+        "enabled": true,
+        "title": "KouriChat 公告",
+        "content": "感谢您使用KouriChat。这是一个免费软件，如果你是付费购买的，说明你被骗了！<br>\n遇到问题看文档https://url.kouri.chat/docs/<br>\n用户群https://kourichat.com/groups/<br>\n推荐使用KouriChat 官方API 付费层级Gemini 支持接入全网Ai APP https://api.kourichat.com/ <br>\n角色广场https://avatars.kourichat.com/<br>\n<br>\nKouri API当前活动：<br>\n一、大客户充值回馈计划：即日起客户在单笔充值500元及以上时联系人工客服可按照88折进行充值，并且直接升级到enterprise用户组！该用户组会提供最优先的服务/专线优化等服务，支持公对公，支持开票，提供SLA。<br>\n二、Kouri API上线服务等级系统，用的越多越便宜！累计充值过500/1000元的用户可分别提交表单申请升级服务等级2/3！服务等级2/3用户可享充值折上折/专线优化/优先响应等福利～具体请查看顶端“服务等级”页面。<br>\n三、Kouri API上线推广阶段激励，最高可得千元奖励！欢迎前往https://api.kourichat.com/console/topup 查看。<br>\n<br>\nKouri API充值比例0.95:1 全场九五折！支持微信支付宝/Visa万事达信用卡（Stripe方式），可前往 控制台-钱包-获取兑换码或在线支付充值哦！注册即送2元余额体验！<br>\n95折充值https://shop.kouri.chat/ 或 闲鱼https://url.kouri.chat/1 或 钱包直接在线95折充值（推荐）<br>\n【9.9r抽50r】盲盒卡 推荐(支持微信) https://shop.kouri.chat/?sid=2 闲鱼https://url.kouri.chat/2<br>\n周边https://url.kouri.chat/3<br>\n【0.99r抽100r】彩票 推荐(支持微信) https://shop.kouri.chat/?sid=3 闲鱼https://url.kouri.chat/8<br>\n<br>\n企业用户商务合作（项目调用、大量调用、API二次转发）请联系15698787444，请勿买零售卡！企业用户有优惠倍率，专线优化～用户数据有异常/无法登录/无法购买/无法支付 请QQ联系人工客服 2225719083 vx15698787444<br>",
+        "priority": "normal",
+        "show_version_info": true,
+        "auto_close": false,
+        "created_at": "2025-09-22T00:47:12.162931"
+    }
 }
