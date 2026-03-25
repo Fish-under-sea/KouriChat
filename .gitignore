@@ -220,3 +220,6 @@ local_config.json
 
 # 用户隐私备份文件
 .backup/
+
+# 模型配置文件
+模型配置/

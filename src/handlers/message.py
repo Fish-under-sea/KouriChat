@@ -690,8 +690,12 @@ class MessageHandler:
         # 过滤用户标签
         reply = self._filter_user_tags(reply)
 
-        # 首先处理文本中的emoji表情符号
+        # 首先处理文本中的 emoji 表情符号
         reply = self._process_text_for_display(reply)
+
+        # 检测情绪强度和类型
+        emotion_type, intensity = self.emoji_handler.detect_emotion_intensity(reply)
+        logger.debug(f"检测到情绪：{emotion_type}, 强度：{intensity}")
 
         if '$' in reply or '＄' in reply:
             parts = [p.strip() for p in reply.replace("＄", "$").split("$") if p.strip()]
@@ -700,53 +704,65 @@ class MessageHandler:
                 # 检查当前部分是否包含表情标签
                 emotion_tags = self.emoji_handler.extract_emotion_tags(part)
                 if emotion_tags:
-                    logger.debug(f"消息片段包含表情: {emotion_tags}")
+                    logger.debug(f"消息片段包含表情：{emotion_tags}")
 
                 # 清理表情标签并发送文本
                 clean_part = part
                 for tag in emotion_tags:
                     clean_part = clean_part.replace(f'[{tag}]', '')
 
-                if clean_part.strip():
-                    self.wx.SendMsg(msg=clean_part.strip(), who=chat_id)
-                    logger.debug(f"发送消息: {clean_part[:20]}...")
-
-                # 发送该部分包含的表情
-                for emotion_type in emotion_tags:
+                # 先发送表情包，再发送文本（修复表情包在末尾的问题）
+                for emotion_tag in emotion_tags:
                     try:
-                        emoji_path = self.emoji_handler.get_emoji_for_emotion(emotion_type)
+                        emoji_path = self.emoji_handler.get_emoji_for_emotion(emotion_tag)
                         if emoji_path:
                             self.wx.SendFiles(filepath=emoji_path, who=chat_id)
-                            logger.debug(f"已发送表情: {emotion_type}")
+                            logger.debug(f"已发送表情包：{emotion_tag}")
                             time.sleep(random.randint(1, 3))
                     except Exception as e:
-                        logger.error(f"发送表情失败 - {emotion_type}: {str(e)}")
+                        logger.error(f"发送表情包失败 - {emotion_tag}: {str(e)}")
+
+                if clean_part.strip():
+                    # 使用 process_text_with_kaomoji 方法处理文本，自动添加颜文字
+                    processed_text = self.emoji_handler.process_text_with_kaomoji(
+                        clean_part.strip(), 
+                        emotion_type, 
+                        intensity
+                    )
+                    self.wx.SendMsg(msg=processed_text, who=chat_id)
+                    logger.debug(f"发送消息：{processed_text[:20]}...")
 
                 time.sleep(random.randint(4, 8))
         else:
             # 处理不包含分隔符的消息
             emotion_tags = self.emoji_handler.extract_emotion_tags(reply)
             if emotion_tags:
-                logger.debug(f"消息包含表情: {emotion_tags}")
+                logger.debug(f"消息包含表情：{emotion_tags}")
 
             clean_reply = reply
             for tag in emotion_tags:
                 clean_reply = clean_reply.replace(f'[{tag}]', '')
 
-            if clean_reply.strip():
-                self.wx.SendMsg(msg=clean_reply.strip(), who=chat_id)
-                logger.debug(f"发送消息: {clean_reply[:20]}...")
-
-            # 发送表情
-            for emotion_type in emotion_tags:
+            # 先发送表情包，再发送文本（修复表情包在末尾的问题）
+            for emotion_tag in emotion_tags:
                 try:
-                    emoji_path = self.emoji_handler.get_emoji_for_emotion(emotion_type)
+                    emoji_path = self.emoji_handler.get_emoji_for_emotion(emotion_tag)
                     if emoji_path:
                         self.wx.SendFiles(filepath=emoji_path, who=chat_id)
-                        logger.debug(f"已发送表情: {emotion_type}")
+                        logger.debug(f"已发送表情包：{emotion_tag}")
                         time.sleep(random.randint(1, 3))
                 except Exception as e:
-                    logger.error(f"发送表情失败 - {emotion_type}: {str(e)}")
+                    logger.error(f"发送表情包失败 - {emotion_tag}: {str(e)}")
+
+            if clean_reply.strip():
+                # 使用 process_text_with_kaomoji 方法处理文本，自动添加颜文字
+                processed_text = self.emoji_handler.process_text_with_kaomoji(
+                    clean_reply.strip(), 
+                    emotion_type, 
+                    intensity
+                )
+                self.wx.SendMsg(msg=processed_text, who=chat_id)
+                logger.debug(f"发送消息：{processed_text[:20]}...")
 
     def _send_raw_message(self, text: str, chat_id: str):
         """直接发送原始文本消息，保留所有换行符和格式
@@ -809,7 +825,7 @@ class MessageHandler:
         command = None
         if content.startswith('/'):
             command = content.split(' ')[0].lower()
-            logger.debug(f"检测到命令: {command}")
+            logger.debug(f"检测到命令：{command}")
 
         # 对于群聊消息，使用不暗示@的格式
         if is_group:
@@ -817,7 +833,23 @@ class MessageHandler:
         else:
             api_content = content
 
+        # 检测情绪状态以动态调整对话轮数
+        emotion_type, intensity = self.emoji_handler.detect_emotion_intensity(content)
+        logger.debug(f"用户消息情绪：{emotion_type}, 强度：{intensity}")
+        
+        # 根据情绪强度动态调整对话轮数
+        # 激动情绪（强度>0.7）使用 10 次，正常情绪使用 5 次
+        dynamic_max_groups = 10 if intensity > 0.7 else 5
+        logger.info(f"根据情绪 {emotion_type}(强度:{intensity}) 设置对话轮数为：{dynamic_max_groups}")
+        
+        # 临时保存原始 max_groups 并设置动态值
+        original_max_groups = self.deepseek.config["max_groups"]
+        self.deepseek.config["max_groups"] = dynamic_max_groups
+
         reply = self.get_api_response(api_content, chat_id, is_group)
+        
+        # 恢复原始 max_groups
+        self.deepseek.config["max_groups"] = original_max_groups
         logger.info(f"AI回复: {reply}")
 
         # 处理回复中的思考过程

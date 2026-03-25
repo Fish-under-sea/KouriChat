@@ -230,7 +230,57 @@ class WeChat:
             if hasattr(self._wx, 'KeepRunning'):
                 return self._wx.KeepRunning()
         except Exception as e:
-            logger.error(f"KeepRunning 失败: {e}")
+            logger.error(f"KeepRunning 失败：{e}")
+    
+    def SendFiles(self, filepath: str, friend: str = None, who: str = None):
+        """发送文件/表情包到聊天窗口
+        
+        Args:
+            filepath: 文件路径
+            friend: 聊天对象名称（新版参数）
+            who: 聊天对象名称（旧版兼容参数）
+        """
+        try:
+            # 兼容两种参数名
+            target = friend or who
+            if not target:
+                logger.error("SendFiles 需要指定 friend 或 who 参数")
+                return False
+            
+            logger.info(f"准备发送文件：{filepath} 到 {target}")
+            
+            # 先切换到指定聊天窗口
+            if not self.ChatWith(target):
+                logger.error(f"切换到聊天窗口失败：{target}")
+                return False
+            
+            # 使用 GetSubWindow 获取聊天对象
+            if hasattr(self._wx, 'GetSubWindow'):
+                chat = self._wx.GetSubWindow(nickname=target)
+                if chat:
+                    # 尝试使用 SendImage 或 SendFiles 方法
+                    if hasattr(chat, 'SendImage'):
+                        result = chat.SendImage(filepath)
+                        logger.info(f"SendImage 发送结果：{result}")
+                        return result
+                    elif hasattr(chat, 'SendFiles'):
+                        result = chat.SendFiles(filepath)
+                        logger.info(f"SendFiles 发送结果：{result}")
+                        return result
+                    else:
+                        # 尝试直接调用 SendMsg（某些版本可能支持）
+                        logger.warning("聊天对象没有 SendImage 或 SendFiles 方法")
+                        return False
+                else:
+                    logger.error(f"获取聊天窗口对象失败：{target}")
+                    return False
+            else:
+                logger.warning("GetSubWindow 不可用")
+                return False
+                
+        except Exception as e:
+            logger.error(f"SendFiles 失败：{e}")
+            return False
     
     def _show(self):
         """显示窗口"""

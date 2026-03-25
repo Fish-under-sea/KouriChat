@@ -1,0 +1,177 @@
+"""
+表情包自动分类脚本
+将 C:/Users/Fish/Downloads/表情包 下的表情包按情感分类到各个角色目录
+根据文件名注释自动分类
+"""
+
+import os
+import shutil
+from pathlib import Path
+
+# 源目录
+SOURCE_DIR = "C:/Users/Fish/Downloads/表情包"
+
+# 目标角色目录
+TARGET_AVATARS = ["AL_1S", "ATRI", "MONO", "Nijiko"]
+
+# 简化的情感分类及对应关键词
+EMOTION_CATEGORIES = {
+    'greeting': ['打招呼', '早安', '晚安', '再见', '再见 2', '再见 3'],
+    'happy': ['高兴', '开心', '哈哈', '恭喜'],
+    'love': ['爱恋', '拥抱', '想念'],
+    'admire': ['崇拜', '超级崇拜', '惊叹', '惊讶'],
+    'polite': ['拜托', '抱歉', '感谢', '辛苦了', '赞同'],
+    'agree': ['好的', '收到', '嗯嗯', 'ok'],
+    'angry': ['生气'],
+    'sad': ['委屈', '要哭了'],
+    'shy': ['害羞'],
+    'curious': ['疑问', '懵逼'],
+    'hungry': ['贪吃', '吃饭'],
+    'tired': ['累了', '好困', '休息', '打工', '摸鱼'],
+    'encourage': ['鼓励', '认真', '求求', '婉拒'],
+    'want': ['想要'],
+    'wait': ['等等'],
+    'sorry': ['抱歉'],
+    'grateful': ['感谢', '辛苦了'],
+}
+
+# 文件到情感的映射（基于文件名）
+FILE_TO_EMOTION = {}
+
+def build_file_emotion_map():
+    """构建文件名到情感的映射"""
+    for emotion, keywords in EMOTION_CATEGORIES.items():
+        for keyword in keywords:
+            if keyword not in FILE_TO_EMOTION:
+                FILE_TO_EMOTION[keyword] = emotion
+
+def detect_emotion_from_filename(filename):
+    """根据文件名检测情感类型"""
+    # 去掉扩展名
+    name_without_ext = os.path.splitext(filename)[0]
+    
+    # 精确匹配
+    if name_without_ext in FILE_TO_EMOTION:
+        return FILE_TO_EMOTION[name_without_ext]
+    
+    # 部分匹配
+    for keyword, emotion in FILE_TO_EMOTION.items():
+        if keyword in name_without_ext:
+            return emotion
+    
+    # 默认分类
+    return 'other'
+
+def sort_emojis(target_avatar="AL_1S", root_dir="d:/Fish-code/KouriChat"):
+    """
+    将表情包分类到指定角色目录
+    
+    Args:
+        target_avatar: 目标角色名称
+        root_dir: 项目根目录
+    """
+    # 构建文件到情感的映射
+    build_file_emotion_map()
+    
+    # 目标 emoji 目录
+    emoji_dir = Path(root_dir) / "data" / "avatars" / target_avatar / "emojis"
+    emoji_dir.mkdir(parents=True, exist_ok=True)
+    
+    # 统计信息
+    stats = {}
+    copied_files = []
+    
+    # 遍历源目录中的所有文件
+    if not os.path.exists(SOURCE_DIR):
+        print(f"错误：源目录不存在 - {SOURCE_DIR}")
+        return
+    
+    files = os.listdir(SOURCE_DIR)
+    print(f"\n找到 {len(files)} 个表情包文件")
+    print("=" * 50)
+    
+    for filename in files:
+        source_path = os.path.join(SOURCE_DIR, filename)
+        
+        # 跳过目录
+        if os.path.isdir(source_path):
+            continue
+        
+        # 检测情感类型
+        emotion = detect_emotion_from_filename(filename)
+        
+        # 创建情感分类目录
+        emotion_dir = emoji_dir / emotion
+        emotion_dir.mkdir(parents=True, exist_ok=True)
+        
+        # 复制文件
+        dest_path = emotion_dir / filename
+        shutil.copy2(source_path, dest_path)
+        
+        # 统计
+        if emotion not in stats:
+            stats[emotion] = 0
+        stats[emotion] += 1
+        copied_files.append((filename, emotion))
+        
+        print(f"[OK] {filename} -> {emotion}/")
+    
+    # 打印统计
+    print("\n" + "=" * 50)
+    print("分类统计:")
+    for emotion, count in sorted(stats.items()):
+        print(f"  {emotion}: {count} 个")
+    print(f"\n总计：{len(copied_files)} 个表情包已分类")
+    
+    return stats, copied_files
+
+
+def main():
+    """主函数"""
+    print("=" * 50)
+    print("表情包自动分类工具")
+    print("=" * 50)
+    print(f"\n源目录：{SOURCE_DIR}")
+    print("情感分类:")
+    for emotion, keywords in EMOTION_CATEGORIES.items():
+        print(f"  {emotion}: {', '.join(keywords)}")
+    
+    # 选择目标角色
+    print("\n" + "=" * 50)
+    print("选择目标角色:")
+    for i, avatar in enumerate(TARGET_AVATARS, 1):
+        print(f"  {i}. {avatar}")
+    print(f"  {len(TARGET_AVATARS)+1}. 所有角色")
+    
+    try:
+        choice = input("\n请输入选项 (默认：1): ").strip()
+        if not choice:
+            choice = "1"
+        
+        if choice.isdigit():
+            choice = int(choice)
+            if choice <= len(TARGET_AVATARS):
+                target = TARGET_AVATARS[choice - 1]
+                sort_emojis(target)
+            elif choice == len(TARGET_AVATARS) + 1:
+                for avatar in TARGET_AVATARS:
+                    print(f"\n[处理角色：{avatar}]")
+                    sort_emojis(avatar)
+            else:
+                print("无效选项")
+        else:
+            # 直接输入角色名
+            target = choice
+            if target in TARGET_AVATARS:
+                sort_emojis(target)
+            else:
+                print(f"未知角色：{target}")
+                print(f"可用角色：{', '.join(TARGET_AVATARS)}")
+    except KeyboardInterrupt:
+        print("\n操作已取消")
+    except Exception as e:
+        print(f"\n发生错误：{e}")
+
+
+if __name__ == "__main__":
+    main()

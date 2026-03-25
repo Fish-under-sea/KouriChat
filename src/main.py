@@ -103,27 +103,46 @@ class PrivateChatBot:
         try:
             username = msg.sender
             content = getattr(msg, 'content', None) or getattr(msg, 'text', None)
+            msgtype = getattr(msg, 'type', 'text')
 
             # 重置倒计时
             self.auto_sender.start_countdown()
 
-            logger.info(f"[私聊] 收到消息 - 来自: {username}")
-            logger.debug(f"[私聊] 消息内容: {content}")
+            logger.info(f"[私聊] 收到消息 - 来自：{username}, 类型：{msgtype}")
+            logger.debug(f"[私聊] 消息内容：{content}")
 
             img_path = None
             is_emoji = False
             is_image_recognition = False
 
-            if content and content.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp')):
-                img_path = content
-                is_emoji = False
-                content = None
+            # 处理图片消息 - image 类型
+            if msgtype == 'image' or (content and content == '[图片]'):
+                logger.info(f"[私聊] 检测到图片消息，准备进行截图识别")
+                try:
+                    # 使用 msg.capture() 方法直接截图消息
+                    img_path = msg.capture()
+                    if img_path:
+                        is_emoji = False
+                        content = None
+                        logger.info(f"[私聊] 图片截图保存至：{img_path}")
+                except Exception as e:
+                    logger.error(f"[私聊] 图片截图失败：{str(e)}")
+                    # 降级使用旧方法
+                    img_path = self.emoji_handler.capture_and_save_screenshot(username)
 
             # 检查动画表情
             if content and "[动画表情]" in content:
-                img_path = self.emoji_handler.capture_and_save_screenshot(username)
-                is_emoji = True
-                content = None
+                try:
+                    # 使用 msg.capture() 方法直接截图消息
+                    img_path = msg.capture()
+                    if img_path:
+                        is_emoji = True
+                        content = None
+                        logger.info(f"[私聊] 表情包截图保存至：{img_path}")
+                except Exception as e:
+                    logger.error(f"[私聊] 表情包截图失败：{str(e)}")
+                    # 降级使用旧方法
+                    img_path = self.emoji_handler.capture_and_save_screenshot(username)
 
             if img_path:
                 recognized_text = self.image_recognition_service.recognize_image(img_path, is_emoji)
@@ -207,9 +226,10 @@ class GroupChatBot:
         try:
             username = msg.sender
             content = getattr(msg, 'content', None) or getattr(msg, 'text', None)
+            msgtype = getattr(msg, 'type', 'text')
 
-            logger.info(f"[群聊] 收到消息 - 群聊: {group_name}, 发送者: {username}")
-            logger.debug(f"[群聊] 消息内容: {content}")
+            logger.info(f"[群聊] 收到消息 - 群聊：{group_name}, 发送者：{username}, 类型：{msgtype}")
+            logger.debug(f"[群聊] 消息内容：{content}")
 
             # 获取群聊专用的处理器
             handler = self.get_group_handler(group_name, group_config)
@@ -222,16 +242,34 @@ class GroupChatBot:
             if self.robot_name and content:
                 content = re.sub(f'@{self.robot_name}\u2005', '', content).strip()
 
-            if content and content.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.bmp')):
-                img_path = content
-                is_emoji = False
-                content = None
+            # 处理图片消息 - image 类型
+            if msgtype == 'image' or (content and content == '[图片]'):
+                logger.info(f"[群聊] 检测到图片消息，准备进行截图识别")
+                try:
+                    # 使用 msg.capture() 方法直接截图消息
+                    img_path = msg.capture()
+                    if img_path:
+                        is_emoji = False
+                        content = None
+                        logger.info(f"[群聊] 图片截图保存至：{img_path}")
+                except Exception as e:
+                    logger.error(f"[群聊] 图片截图失败：{str(e)}")
+                    # 降级使用旧方法
+                    img_path = self.emoji_handler.capture_and_save_screenshot(username)
 
             # 检查动画表情
             if content and "[动画表情]" in content:
-                img_path = self.emoji_handler.capture_and_save_screenshot(username)
-                is_emoji = True
-                content = None
+                try:
+                    # 使用 msg.capture() 方法直接截图消息
+                    img_path = msg.capture()
+                    if img_path:
+                        is_emoji = True
+                        content = None
+                        logger.info(f"[群聊] 表情包截图保存至：{img_path}")
+                except Exception as e:
+                    logger.error(f"[群聊] 表情包截图失败：{str(e)}")
+                    # 降级使用旧方法
+                    img_path = self.emoji_handler.capture_and_save_screenshot(username)
 
             if img_path:
                 recognized_text = self.image_recognition_service.recognize_image(img_path, is_emoji)
@@ -457,13 +495,31 @@ def message_dispatcher(wx_instance):  # 添加参数
                         if msg_id and msg_id in processed_messages:
                             logger.debug(f"跳过已处理的消息ID: {msg_id}")
                             continue
-                        if not content:
-                            logger.info(f"【调试】消息内容为空，跳过")
+                        # 接受 friend, text, base, emotion, image 类型的消息（这些都是好友消息）
+                        # emotion 类型用于表情包消息，image 类型用于图片消息
+                        if msgtype not in ['friend', 'text', 'base', 'emotion', 'image']:
+                            logger.info(f"【调试】非好友消息，忽略！消息类型：{msgtype}")
                             continue
-                        # 接受 text 和 base 类型的消息（这些都是好友消息）
-                        if msgtype not in ['friend', 'text', 'base']:
-                            logger.info(f"【调试】非好友消息，忽略! 消息类型: {msgtype}")
-                            continue
+                        
+                        # 处理表情包消息 - 将 emotion 类型转换为可识别的内容
+                        if msgtype == 'emotion':
+                            # 表情包消息，标记为需要截图识别
+                            logger.info(f"【调试】收到表情包消息，类型：{msgtype}")
+                            # 对于 emotion 类型，content 可能为空或包含图片路径
+                            # 后续处理会调用 emoji_handler 来截图保存
+                            if not content:
+                                # 如果 content 为空，设置为标记字符串
+                                content = "[动画表情]"
+                        
+                        # 处理图片消息 - image 类型
+                        if msgtype == 'image':
+                            logger.info(f"【调试】收到图片消息，类型：{msgtype}")
+                            # 对于 image 类型，content 可能是图片路径或 [图片] 标记
+                            # 后续处理会调用图像识别服务来识别图片内容
+                            if not content or content == '[图片]':
+                                # 如果 content 是 [图片] 标记或为空，需要获取实际图片路径
+                                # 这里设置为标记，后续处理会尝试获取图片
+                                content = "[图片]"
                         # 检查消息来源是否在监听列表中
                         logger.info(f"【调试】检查监听列表: {who} in {listen_list} = {who in listen_list}")
                         if who not in listen_list:
