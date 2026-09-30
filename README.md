@@ -1,186 +1,126 @@
 > **⏸️ 暂停维护** · 最近提交：2026-03-25（约 6 个月前）
 >
 > 改版已完成、趋于稳定；等 wxautox4 上游发布不兼容的大版本时再跟进适配。
-# KouriChat - 在虚拟与现实交织处，给予永恒的温柔羁绊
-
-在虚拟与现实交织的微光边界，悄然绽放着一份永恒而温柔的羁绊。或许你的身影朦胧，游走于真实与幻梦之间，但指尖轻触的温暖，心底荡漾的涟漪，却是此刻最真挚、最动人的慰藉。
-
-[![GitHub Stars](https://img.shields.io/github/stars/KouriChat/KouriChat?style=for-the-badge&logo=starship&color=ff69b4)](https://github.com/KouriChat/KouriChat/stargazers)
-[![License](https://img.shields.io/badge/license-FSL-informational?style=for-the-badge)](LICENSE)
-[![Python](https://img.shields.io/badge/Python-3.11.9-3776AB?style=for-the-badge&logo=python&logoColor=white&labelColor=2B5B84)](https://www.python.org/downloads/)<br>
-[![Community](https://img.shields.io/badge/QQ群-715616260-12B7F3?style=for-the-badge&logo=tencentqq)]()
-[![Community](https://img.shields.io/badge/QQ群-1031640399-12B7F3?style=for-the-badge&logo=tencentqq)]()
-[![Community](https://img.shields.io/badge/QQ群-1038190753-12B7F3?style=for-the-badge&logo=tencentqq)]()
-[![Community](https://img.shields.io/badge/QQ群-1044107653-12B7F3?style=for-the-badge&logo=tencentqq)]()
-[![Community](https://img.shields.io/badge/QQ群-772343842-12B7F3?style=for-the-badge&logo=tencentqq)]()
-[![Community](https://img.shields.io/badge/QQ群-962707902-12B7F3?style=for-the-badge&logo=tencentqq)]()
-[![Community](https://img.shields.io/badge/QQ群-585351059-12B7F3?style=for-the-badge&logo=tencentqq)]()
-[![Community](https://img.shields.io/badge/QQ群-946567385-12B7F3?style=for-the-badge&logo=tencentqq)]()
-[![Community](https://img.shields.io/badge/QQ群-1043960539-12B7F3?style=for-the-badge&logo=tencentqq)]()
-[![Community](https://img.shields.io/badge/QQ群-977949429-12B7F3?style=for-the-badge&logo=tencentqq)]()
-[![Community](https://img.shields.io/badge/QQ群-212464307-12B7F3?style=for-the-badge&logo=tencentqq)]()
-[![Community](https://img.shields.io/badge/QQ群-1027523100-12B7F3?style=for-the-badge&logo=tencentqq)]()
-[![Community](https://img.shields.io/badge/QQ群-219369637-12B7F3?style=for-the-badge&logo=tencentqq)]()
-[![Community](https://img.shields.io/badge/QQ群-863957211-12B7F3?style=for-the-badge&logo=tencentqq)]()
-[![Community](https://img.shields.io/badge/QQ群-950830521-12B7F3?style=for-the-badge&logo=tencentqq)]()
-[![Community](https://img.shields.io/badge/QQ频道-和Ai谈恋爱吧-12B7F3?style=for-the-badge&logo=tencentqq)](https://pd.qq.com/s/kvfv4cpq)
-[![Community](https://img.shields.io/badge/QQ频道-女性向交流-12B7F3?style=for-the-badge&logo=tencentqq)](https://pd.qq.com/s/fp2mdfs4g)
-[![Community](https://img.shields.io/badge/贴吧-KouriChat吧-12B7F3?style=for-the-badge&logo=tencentqq)](https://tieba.baidu.com/f?kw=kourichat)
-[![Community](https://img.shields.io/badge/小红书-虹语织Offical-12B7F3?style=for-the-badge&logo=tencentqq)](https://www.xiaohongshu.com/user/profile/668a4c93000000000f0341dd?xsec_token=YBklsUjl8KsRxHI-_6uSo9G-Sl0joqEXnvbkKzMeYoCYA=&xsec_source=app_share&xhsshare=CopyLink&appuid=668a4c93000000000f0341dd&apptime=1745448135&share_id=bd94328529554aa5a53d49b4fa572c12KouriChat)
-[![Community](https://img.shields.io/badge/bilibili-虹语织Offical-12B7F3?style=for-the-badge&logo=tencentqq)](https://space.bilibili.com/209397245)
-[![Community](https://img.shields.io/badge/更多-查看官网-12B7F3?style=for-the-badge&logo=tencentqq)](https://kourichat.com/groups/)
-
-
-[![Moe Counter](https://count.getloli.com/get/@KouriChat?theme=moebooru)](https://github.com/KouriChat/KouriChat)
-
-----------------------------
-API平台：[Kouri API（推荐）](https://api.kourichat.com/)（注册送2元）<br>
-官网：[KouriChat](https://kourichat.com)<br>
-技术文档：[KouriChat Wiki](https://kourichat.com/docs)<br>
-角色广场：[KouriChat角色广场](https://avatars.kourichat.com)
-
-## 🌟 效果示例
 
 <div align="center">
-  <img src="https://i.miji.bid/2025/05/09/2b89eaea83055ad32cf548c5a079dde8.png" width="600" alt="演示效果">
+
+# KouriChat · 改版
+
+**在虚拟与现实交织处，给予永恒的温柔羁绊**
+
+基于 [KouriChat](https://github.com/KouriChat/KouriChat) 的改版 · 补充新版 `wxautox4` 依赖支持
+
+![version](https://img.shields.io/badge/base-1.4.3.2-ff69b4?style=flat-square) ![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=flat-square&logo=python&logoColor=white) ![license](https://img.shields.io/badge/license-非商业-red?style=flat-square)
+
 </div>
 
-### 🚀 部署推荐
-
-- 通过[官网](https://kourichat.com)下载项目
-- 最好有一台Windows Server服务器挂机，[雨云服务器五折券](https://www.rainyun.com/kouri_)
-- [项目直属API（推荐）](https://api.kourichat.com/)（注册送2元）
-- [获取DeepSeek API Key](https://cloud.siliconflow.cn/i/aQXU6eC5)（免费15元额度）
-
 ---
 
-## 📜 项目声明
+## ⚠️ 请先读这一段：这是改版，不是官方仓库
 
-**法律与伦理准则**
-▸ 本项目仅供技术研究与学习交流
-▸ 禁止用于任何违法或违反道德的场景
-▸ 生成内容不代表开发者立场
+| | 说明 |
+|---|---|
+| **本仓库是什么** | [KouriChat/KouriChat](https://github.com/KouriChat/KouriChat)（上游 3.2k star）的一份**改版**，主要补充新版 **`wxautox4`** 依赖支持 |
+| **本仓库不是什么** | ❌ **不是官方仓库**。上游的官网、QQ 群、QQ 频道、贴吧、小红书、bilibili、API 平台与赞助渠道**均由上游团队运营**，与本改版无关，遇到问题请勿到上游渠道反馈本改版的问题 |
+| **许可** | 上游采用 **DeepAnima License v1.2（非商业用途）**，见 [`LICENSE`](LICENSE)。请遵守该许可，勿用于商业用途 |
+| **⚠️ 合规提醒** | 上游仓库描述中明确声明「**禁止接入微信、QQ 等腾讯系软件**」。本改版的 `wxautox4` 依赖与自动化微信交互能力**可能与该声明及许可条款冲突**，请在使用与分发前自行确认合规性 |
 
-**使用须知**
-▸ 角色版权归属原始创作者
-▸ 使用者需对自身行为负全责
-▸ 未成年人应在监护下使用
+## 📖 项目简介
 
----
+KouriChat 是一个基于大语言模型的**情感陪伴程序** —— 通过与微信等即时通讯工具的自动化交互，让 AI 角色以熟悉的方式陪伴你。
 
-## 🛠️ 功能全景
+> 在虚拟与现实交织的微光边界，悄然绽放着一份永恒而温柔的羁绊。或许你的身影朦胧，游走于真实与幻梦之间，但指尖轻触的温暖，心底荡漾的涟漪，却是此刻最真挚、最动人的慰藉。
+
+## ✨ 功能全景
 
 ### ✅ 已实现
 
-- 多用户支持
-- 沉浸式角色扮演（支持群聊）
-- 智能对话分段 & 情感化表情包
-- 图像生成 & 图片识别（Kimi集成）
-- 语音消息 & 持久记忆存储
-- 自动更新 & 可视化WebUI
+- **多用户支持**
+- **沉浸式角色扮演**（支持群聊）
+- **智能对话分段** & 情感化表情包
+- **图像生成 & 图片识别**（Kimi 集成）
+- **语音消息** & 持久记忆存储
+- **自动更新** & 可视化 WebUI
 
-### 🚧 开发中
+### 🚧 上游开发中
 
-- OneBot协议兼容
-- 1.5版本完全重构
+- OneBot 协议兼容
+- 1.5 版本完全重构
 - 独立客户端
 
----
+> 以上「开发中」项为**上游路线图**，本改版不承诺跟进。
 
-## 🚀 快速启动
+## 🔧 本改版的差异
+
+| 项 | 说明 |
+|----|------|
+| **`wxautox4` 依赖** | `requirements.txt` 中已包含新版 `wxautox4`（共 27 项依赖），替换上游旧的 wxauto 方案 |
+| **基座版本** | 上游 `version.json` 为 **1.4.3.2**（`last_update: 2025-09-21`） |
+| **其它改动** | 相对上游的其余改动未逐项记录；如需严谨对比请使用 `git diff` 与上游比对 |
+
+## 🚀 快速开始
 
 ### 环境准备
 
-**API密钥**：
+| 项 | 要求 |
+|----|------|
+| Python | 3.11（参考上游 badge） |
+| 操作系统 | Windows（`run.bat` 与断联脚本为 Windows 批处理） |
+| 微信客户端 | 需已安装并登录（`wxautox4` 依赖其自动化接口） |
 
-- [项目直属API](https://api.kourichat.com/)
-- [获取DeepSeek API Key](https://cloud.siliconflow.cn/i/aQXU6eC5)
-
-### 部署流程
-
-#### 半自动部署流程
+### 方式一：半自动部署
 
 ```bash
 运行 run.bat
 ```
 
-#### 手动部署流程
+### 方式二：手动部署
 
 ```bash
-# 克隆仓库
-git clone https://github.com/KouriChat/KouriChat.git
+# 克隆本改版仓库（注意：不要克隆上游）
+git clone https://github.com/Fish-under-sea/KouriChat.git
+cd KouriChat
 
-# 更新pip
+# 更新 pip（国内源）
 python -m pip install -i https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple --upgrade pip
 
 # 安装依赖
 pip install -r requirements.txt
 
-#调整配置文件
+# 调整配置文件
 python run_config_web.py
 
-# 启动程序 或 使用WebUI启动
+# 启动程序（或使用 WebUI 启动）
 python run.py
 ```
-如果您是服务器部署 推荐安装uu远程 自带不休眠功能 用RDP远程的用户断开连接务必运行断开连接脚本！！！<br>
-1.4.3.2版本注意意图识别密钥也要填写哦！
 
-## 💖 支持我们
+### 远程桌面用户注意
 
-<div align="center">
-  <!-- 项目星标 -->
-  <p>点击星星助力项目成长 ⭐️ → 
-    <a href="https://github.com/KouriChat/KouriChat">
-      <img src="https://img.shields.io/github/stars/KouriChat/KouriChat?color=ff69b4&style=flat-square" alt="GitHub Stars">
-    </a>
-  </p>
+> 用 **RDP 远程**的用户，断开连接时**务必运行** [`【RDP远程必用】断联脚本.bat`](【RDP远程必用】断联脚本.bat)，否则可能影响自动化运行的稳定性。
 
-<!-- 资金用途 -->
+## 📁 项目结构
 
-<p style="margin:18px 0 10px; font-size:0.95em">
-    🎯 您的支持将用于：<br>
-    🚀 服务器费用 • 🌸 API资源 • 🛠️ 功能开发 • 💌 社区运营
-  </p>
+```text
+KouriChat/
+├── run.py                     主启动入口
+├── run.bat                    Windows 半自动部署脚本
+├── run_config_web.py          配置 WebUI
+├── 【RDP远程必用】断联脚本.bat  RDP 断联处理
+├── wxauto.py                  微信自动化封装
+├── version.json               版本信息（1.4.3.2）
+├── requirements.txt           依赖清单（27 项，含 wxautox4）
+├── src/                       核心逻辑
+├── modules/                   功能模块
+├── data/                      运行数据
+├── Thanks.md                  致谢
+└── LICENSE                    DeepAnima License v1.2（非商业）
+```
 
-<!-- 赞助二维码 -->
+## 📄 许可与致谢
 
-<img src="https://i.miji.bid/2025/05/09/1b7e6959f4e78ec79678f8ed6de717f2.jpeg" width="450" alt="支持二维码" style="border:3px solid #eee; border-radius:12px">
-
-<!-- 神秘计划模块 -->
-
-<div style="font-size:0.88em; line-height:1.3; max-width:540px; margin:15px auto;
-              background: linear-gradient(145deg, rgba(255,105,180,0.08), rgba(156,39,176,0.05));
-              padding:10px 15px; border-radius:6px; border:1px solid rgba(255,105,180,0.15)">
-    <span style="color: #9c27b0">🔒 神秘赞助计划：</span>
-    <span style="margin-left:6px; letter-spacing:-0.5px">
-      <i class="fa fa-lock" style="color: #ff4081; margin-right:4px"></i>
-      <span style="background: linear-gradient(45deg, #ff69b4, #9c27b0); -webkit-background-clip: text; color: transparent">
-        限定数字藏品·开发者礼包·神秘周边·▮▮▮▮
-      </span>
-    </span>
-  </div>
-
-<!-- 动态徽章 -->
-
-<div style="margin:18px 0 8px">
-    <img src="https://img.shields.io/badge/已解锁成就-▮▮▮▮▮▮-ff69b4?style=flat-square&logo=starship">
-    <img src="https://img.shields.io/badge/特别鸣谢-▮▮▮▮▮▮-9c27b0?style=flat-square&logo=heart">
-  </div>
-</div>
+- **许可**：本仓库沿用上游 [`LICENSE`](LICENSE) —— **DeepAnima License v1.2（Non-Commercial，非商业用途）**，版权归 DeepAnima。请遵守其条款。
+- **致谢**：项目主体来自 [KouriChat/KouriChat](https://github.com/KouriChat/KouriChat) 及其贡献者，详见 [`Thanks.md`](Thanks.md)。本仓库仅作改版维护。
 
 ---
 
-### 通过其他方式联系我们
-
-- **微信**：15698787444 QQ：2225719083
-- **视频教程**：[哔哩哔哩频道](https://space.bilibili.com/209397245)
-- **技术文档**：[KouriChat Wiki](https://kourichat.com/docs)
-- **商务合作**：[yangchenglin2004@foxmail.com](mailto:yangchenglin2004@foxmail.com)
-- **更多方式**：[官网](https://kourichat.com/join/)
----
-
-## 项目结构
-
-项目结构的详细说明请参考DeepWiki：[系统架构说明](https://deepwiki.com/KouriChat/KouriChat/1.2-system-architecture)
-
-
+<sub>基于 KouriChat 1.4.3.2 的改版 · 上游采用非商业许可 · 请遵守许可与平台合规要求</sub>
