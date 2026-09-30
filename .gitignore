@@ -223,3 +223,6 @@ local_config.json
 
 # 模型配置文件
 模型配置/
+
+# IDE 配置
+.cursor/
