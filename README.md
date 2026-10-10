@@ -12,6 +12,8 @@
 
 ![version](https://img.shields.io/badge/base-1.4.3.2-ff69b4?style=flat-square) ![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=flat-square&logo=python&logoColor=white) ![license](https://img.shields.io/badge/license-非商业-red?style=flat-square)
 
+**简体中文** · [English](README.en.md)
+
 </div>
 
 ---
